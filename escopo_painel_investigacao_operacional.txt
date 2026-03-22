@@ -1,0 +1,622 @@
+# ESCOPO COMPLETO — PAINEL DE INVESTIGAÇÃO OPERACIONAL E GESTÃO DE CASOS
+
+## VISÃO GERAL DO PRODUTO
+
+Criar uma plataforma web premium, com estética inspirada em painéis de inteligência e investigação de alto nível, transmitindo sensação de controle, organização, análise e operação. O sistema deve ser elegante, sofisticado, responsivo e com foco principal em uso desktop, sem deixar de funcionar bem em telas menores.
+
+A proposta é oferecer um ambiente centralizado para gestão de casos, organização de informações, análise visual de vínculos, acompanhamento de investigações, registro de notas, montagem de organogramas e fechamento de casos.
+
+O produto não deve ter aparência genérica, amadora ou com cara de template comum. O visual deve lembrar um centro de comando moderno, com identidade forte, refinada, sóbria e imersiva.
+
+## OBJETIVO PRINCIPAL
+
+Construir um painel operacional de investigação e gestão de casos que permita:
+
+- cadastrar e acompanhar investigados
+- organizar investigações em andamento
+- montar organogramas visuais com vínculos entre pessoas, empresas, telefones, endereços e outros elementos
+- criar notas livres e observações estratégicas
+- registrar linha do tempo dos acontecimentos
+- reunir consultas vindas de fontes externas e APIs
+- classificar prioridade, risco e status de cada caso
+- facilitar análise visual e tomada de decisão
+- permitir fechamento de caso com resumo final
+- manter tudo organizado de forma clara, visual e operacional
+
+## DIREÇÃO VISUAL E IDENTIDADE
+
+O design deve seguir uma linha premium e cinematográfica, com estética de inteligência operacional.
+
+### Sensação desejada
+
+- sofisticado
+- reservado
+- estratégico
+- técnico
+- forte
+- preciso
+- elegante
+- investigativo
+- confiável
+
+### Estilo visual
+
+- tema escuro como padrão
+- aparência inspirada em command center
+- contraste alto, porém refinado
+- interface limpa, mas com profundidade visual
+- sensação de software caro, sério e exclusivo
+- visual de alto padrão, sem poluição
+
+### Paleta sugerida
+
+- preto grafite
+- azul petróleo
+- cinza chumbo
+- aço escuro
+- detalhes sutis em ciano, âmbar ou vermelho de alerta
+- verde apenas quando necessário para estados positivos ou confirmação
+
+### Tipografia
+
+- moderna
+- limpa
+- firme
+- corporativa
+- tecnológica
+- excelente legibilidade em desktop
+
+### Acabamento visual
+
+- painéis elegantes
+- sombras suaves
+- divisórias finas
+- microdetalhes de interface
+- ícones discretos e precisos
+- cards com acabamento premium
+- layout com hierarquia muito bem definida
+
+## ESTRUTURA GERAL DA PLATAFORMA
+
+A plataforma deve ser dividida em grandes áreas operacionais.
+
+### 1. Dashboard principal
+
+Tela inicial com visão geral da operação.
+
+Deve exibir:
+- total de casos abertos
+- total de casos em andamento
+- casos encerrados
+- alertas prioritários
+- investigações recentes
+- atualizações recentes da equipe
+- atividades pendentes
+- distribuição por status
+- distribuição por nível de risco
+- distribuição por responsável
+- visão resumida de produtividade e andamento
+
+O dashboard deve ser limpo, muito bem organizado e com leitura rápida.
+
+### 2. Gestão de casos
+
+Área central do sistema para cadastro, visualização e acompanhamento dos casos.
+
+Cada caso deve ter:
+- título do caso
+- identificador interno
+- responsável
+- prioridade
+- status
+- nível de risco
+- data de criação
+- última atualização
+- resumo inicial
+- observações principais
+- tags de classificação
+
+Cada caso deve poder ser aberto em uma página própria, com estrutura completa e organizada.
+
+### 3. Página individual do caso
+
+Ao abrir um caso, o usuário deve acessar um ambiente completo de investigação.
+
+Essa tela deve conter:
+
+#### Cabeçalho do caso
+
+- nome do caso
+- status atual
+- prioridade
+- responsável
+- data de abertura
+- data da última movimentação
+- botões de ação rápida
+- opção de encerrar ou reabrir caso
+
+#### Área de navegação interna do caso
+
+A página do caso deve ser dividida em abas ou seções bem organizadas, como:
+
+- Visão geral
+- Investigados
+- Organograma
+- Timeline
+- Consultas
+- Notas
+- Anexos
+- Tarefas
+- Fechamento
+
+## MÓDULOS FUNCIONAIS
+
+### MÓDULO 1 — VISÃO GERAL DO CASO
+
+Esta aba deve trazer o panorama resumido do caso.
+
+Conteúdo:
+- resumo executivo
+- principais informações do investigado
+- principais vínculos já identificados
+- alertas relevantes
+- últimas movimentações
+- pendências abertas
+- próximos passos
+- observações estratégicas
+
+Essa visão precisa ser clara, objetiva e muito útil para entender o caso em poucos segundos.
+
+### MÓDULO 2 — INVESTIGADOS
+
+Área para cadastrar e visualizar os alvos ou pessoas relacionadas ao caso.
+
+Cada perfil deve permitir:
+- nome principal
+- apelidos ou nomes alternativos
+- documento
+- telefones
+- e-mails
+- endereços
+- observações relevantes
+- tags
+- classificação
+- vínculos com outras entidades
+- histórico resumido dentro do caso
+
+Também deve ser possível associar ao investigado:
+- empresas
+- familiares
+- sócios
+- conhecidos
+- locais
+- observações internas
+- anexos
+- notas específicas
+
+A experiência deve ser fluida e organizada, com fácil visualização.
+
+### MÓDULO 3 — ORGANOGRAMA INVESTIGATIVO
+
+Esse é um dos módulos mais importantes do sistema.
+
+Deve existir um painel visual interativo onde o usuário possa montar relações entre elementos da investigação, com aparência de quadro de inteligência.
+
+O organograma deve permitir:
+- criar nós manualmente
+- arrastar e soltar nós livremente
+- conectar elementos
+- editar títulos
+- adicionar subtítulos
+- definir cor por categoria
+- fixar itens importantes
+- destacar itens críticos
+- bloquear posição de elementos
+- agrupar visualmente
+- ocultar ou exibir conexões
+- aproximar e afastar zoom
+- navegar pelo quadro com fluidez
+- salvar a disposição visual
+- mover com facilidade em desktop
+
+Tipos de elementos que podem existir no quadro:
+- pessoa
+- empresa
+- telefone
+- endereço
+- veículo
+- conta
+- observação
+- evento
+- prova
+- local
+- ocorrência
+- item customizado
+
+Cada elemento deve poder abrir um painel lateral com detalhes rápidos.
+
+Também deve ser possível:
+- adicionar notas em cada nó
+- colocar observações rápidas
+- marcar nível de importância
+- adicionar tags
+- deixar comentários estratégicos
+
+Esse quadro deve ser extremamente bonito e parecer realmente uma central de investigação visual.
+
+### MÓDULO 4 — MURAL LIVRE / PAINEL DE ANÁLISE
+
+Além do organograma, deve existir um espaço mais livre, estilo mural investigativo, onde o usuário possa organizar pensamentos e materiais de forma mais solta.
+
+Esse espaço deve permitir:
+- criar notas avulsas
+- posicionar blocos livremente
+- colocar prints, imagens e referências
+- escrever observações rápidas
+- destacar ideias
+- agrupar raciocínios
+- montar hipóteses
+- sinalizar prioridades
+- fazer anotações visuais
+- conectar informalmente pontos da investigação
+
+Esse mural deve ser pensado como uma mesa de análise visual, mais criativa e estratégica.
+
+### MÓDULO 5 — TIMELINE DO CASO
+
+A timeline deve exibir a evolução da investigação de forma cronológica.
+
+Ela deve permitir registrar:
+- criação do caso
+- inclusão de investigado
+- consultas realizadas
+- atualizações importantes
+- observações relevantes
+- movimentações operacionais
+- anexação de provas
+- mudanças de status
+- tentativa de contato
+- retorno recebido
+- quebra de acordo
+- reabertura de caso
+- encerramento do caso
+
+A timeline deve ser:
+- elegante
+- fácil de ler
+- filtrável
+- organizada por data
+- útil para revisar rapidamente o histórico completo
+
+### MÓDULO 6 — CONSULTAS E FONTES DE DADOS
+
+Deve existir uma área específica para registrar e visualizar consultas externas feitas ao longo do caso.
+
+Essa área deve ser preparada para integração com APIs e fontes de dados autorizadas.
+
+A interface deve permitir:
+- escolher a fonte de consulta
+- acionar uma consulta
+- visualizar resposta de forma organizada
+- registrar data e hora da consulta
+- vincular o resultado ao caso
+- anexar observações sobre a consulta
+- marcar confiabilidade percebida
+- destacar resultado relevante
+- salvar o histórico das consultas dentro do caso
+
+A experiência dessa área deve ser séria, limpa e operacional.
+
+Também deve existir organização por:
+- tipo de fonte
+- resultado
+- data
+- relevância
+- vínculo com investigado ou entidade
+
+### MÓDULO 7 — NOTAS E INTELIGÊNCIA OPERACIONAL
+
+O sistema deve permitir escrever notas detalhadas ao longo de toda a investigação.
+
+Tipos de notas desejados:
+- nota rápida
+- nota analítica
+- observação sensível
+- hipótese
+- pendência
+- resumo parcial
+- parecer interno
+- conclusão operacional
+
+As notas devem poder ser:
+- privadas
+- vinculadas ao caso
+- vinculadas a investigado
+- vinculadas a item do organograma
+- destacadas
+- fixadas
+- organizadas por categoria
+
+Também deve existir um editor agradável, elegante e confortável para escrita longa.
+
+### MÓDULO 8 — ANEXOS E EVIDÊNCIAS
+
+Área para guardar arquivos relacionados ao caso.
+
+Deve permitir:
+- upload de documentos
+- imagens
+- prints
+- PDFs
+- comprovantes
+- relatórios
+- arquivos diversos
+
+A visualização deve ser organizada e agradável, com:
+- nome do arquivo
+- data de inclusão
+- responsável que anexou
+- descrição
+- vínculo com caso ou elemento específico
+
+Também deve existir:
+- pré-visualização quando possível
+- busca rápida
+- filtros
+- organização limpa
+
+### MÓDULO 9 — TAREFAS E FLUXO OPERACIONAL
+
+Cada caso deve possuir um espaço para tarefas e ações operacionais.
+
+Exemplos:
+- revisar informação
+- atualizar contato
+- gerar novo relatório
+- validar vínculo
+- solicitar retorno
+- reavaliar caso
+- concluir etapa
+- fechar caso
+
+Cada tarefa deve ter:
+- título
+- descrição
+- responsável
+- status
+- prioridade
+- prazo
+- data de criação
+
+Essa área deve ajudar a transformar a investigação em operação prática.
+
+### MÓDULO 10 — FECHAMENTO DE CASO
+
+Todo caso deve poder ser finalizado com um fechamento formal.
+
+O fechamento deve permitir registrar:
+- resumo final
+- conclusão operacional
+- principais pontos encontrados
+- resultado final
+- status de encerramento
+- motivo do encerramento
+- observações finais
+- próximos passos, se houver
+- recomendação interna
+
+Também deve ser possível:
+- marcar caso como encerrado
+- reabrir caso se necessário
+- visualizar histórico de fechamento
+- gerar versão organizada para consulta posterior
+
+Essa etapa deve ser visualmente forte, clara e bem formatada.
+
+## FILTROS, BUSCA E NAVEGAÇÃO
+
+O sistema deve possuir uma navegação muito eficiente.
+
+Deve haver:
+- busca global
+- filtros avançados
+- busca por nome
+- busca por telefone
+- busca por documento
+- busca por tag
+- busca por status
+- busca por responsável
+- busca por prioridade
+- busca por período
+
+A navegação deve ser rápida, intuitiva e muito agradável no desktop.
+
+## PAINEL LATERAL INTELIGENTE
+
+Sempre que o usuário clicar em um caso, investigado, entidade, item do organograma ou anotação, deve abrir um painel lateral elegante com informações rápidas e ações contextuais.
+
+Esse painel lateral pode mostrar:
+- dados resumidos
+- histórico rápido
+- vínculos principais
+- notas relacionadas
+- anexos relacionados
+- ações rápidas
+- edição rápida
+- mudança de status
+- atalhos úteis
+
+Esse detalhe melhora muito a experiência premium do sistema.
+
+## EXPERIÊNCIA DE USO
+
+A interface precisa ser muito bem pensada para uso real.
+
+### Requisitos de UX
+
+- desktop-first
+- layout fluido
+- foco em produtividade
+- visual claro mesmo em tema escuro
+- transições suaves
+- ações rápidas
+- organização impecável
+- sensação de controle total
+- baixa fricção
+- componentes consistentes
+- leitura fácil
+- sem excesso de elementos desnecessários
+
+### Deve parecer
+
+- software operacional premium
+- central de análise
+- plataforma investigativa robusta
+- produto autoral e sofisticado
+
+### Não deve parecer
+
+- template genérico
+- CRM barato
+- painel bagunçado
+- dashboard comum de SaaS básico
+- interface colorida demais ou infantil
+
+## RESPONSIVIDADE
+
+O foco principal deve ser desktop, mas o sistema precisa funcionar bem em telas menores.
+
+### Desktop
+
+- prioridade máxima
+- melhor experiência
+- uso intenso de painéis
+- aproveitamento inteligente de espaço
+- quadro visual amplo
+- múltiplas áreas simultâneas
+
+### Tablet
+
+- boa adaptação
+- layout reorganizado
+- painéis recolhíveis
+- interação fluida
+
+### Mobile
+
+- navegação funcional
+- foco em consulta e atualização rápida
+- sem perder legibilidade
+- sem tentar replicar tudo do desktop de forma forçada
+
+## PERMISSÕES E PERFIS DE USO
+
+O sistema deve suportar diferentes níveis de acesso.
+
+Exemplos:
+- administrador
+- operador
+- analista
+- supervisor
+
+Cada perfil pode ter diferentes permissões em relação a:
+- visualizar casos
+- editar casos
+- criar investigações
+- encerrar casos
+- ver notas privadas
+- acessar consultas
+- gerenciar equipe
+- exportar dados
+
+## LOGS E RASTREABILIDADE
+
+O sistema deve registrar movimentações importantes de forma organizada, para dar segurança operacional e clareza histórica.
+
+Exemplos de eventos a registrar:
+- criação de caso
+- edição de caso
+- atualização de status
+- nova nota
+- novo anexo
+- nova consulta
+- alteração relevante
+- fechamento de caso
+- reabertura
+- mudança de responsável
+
+Tudo isso deve acontecer de forma discreta, mas robusta.
+
+## ORGANIZAÇÃO VISUAL DOS CASOS
+
+Os casos devem poder ser visualizados em formatos diferentes, conforme o estilo de trabalho do usuário.
+
+Exemplos de visualização:
+- lista
+- cards
+- quadro por status
+- tabela operacional
+- visão por prioridade
+- visão por responsável
+
+Deve ser possível alternar entre esses modos de visualização.
+
+## AÇÕES RÁPIDAS IMPORTANTES
+
+O sistema deve ter ações rápidas e muito úteis, como:
+- criar caso
+- adicionar nota
+- adicionar investigado
+- criar vínculo
+- abrir organograma
+- marcar prioridade
+- mudar status
+- anexar arquivo
+- gerar resumo rápido
+- encerrar caso
+
+## TOM DO PRODUTO
+
+A linguagem da interface deve ser:
+- firme
+- elegante
+- objetiva
+- sóbria
+- profissional
+- clara
+
+Evitar linguagem caricata ou exagerada. A inspiração em inteligência e investigação deve aparecer na estética e na organização, não em exageros visuais ou textos teatrais.
+
+## DIFERENCIAIS ESPERADOS
+
+Este produto deve se destacar por:
+- visual premium
+- organograma investigativo elegante
+- mural analítico livre
+- excelente organização de casos
+- navegação refinada
+- sensação real de painel operacional
+- alta clareza visual
+- experiência madura e robusta
+- interface memorável
+- foco real em produtividade e análise
+
+## RESULTADO FINAL ESPERADO
+
+Ao final, o sistema deve parecer uma plataforma privada de alto nível para análise e gestão de investigações, com:
+
+- estética premium e autoral
+- excelente uso em desktop
+- gestão clara de casos
+- análise visual de vínculos
+- organização operacional forte
+- notas e resumos bem estruturados
+- histórico completo do caso
+- ambiente sofisticado e funcional
+- sensação de software sério, exclusivo e poderoso
+
+## RESUMO EXECUTIVO DO PROJETO
+
+Criar uma plataforma web desktop-first, premium, elegante e altamente organizada, inspirada em painéis de inteligência operacional, focada em gestão de casos, análise visual de vínculos, organização de investigações, notas estratégicas, timeline, consultas externas, mural analítico, tarefas operacionais e fechamento de caso.
+
+O sistema deve unir sofisticação visual com utilidade prática, oferecendo um ambiente forte, refinado, memorável e extremamente funcional.
