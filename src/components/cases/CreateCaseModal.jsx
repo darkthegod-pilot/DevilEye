@@ -13,22 +13,22 @@ export function CreateCaseModal({ open, onClose }) {
     status: 'active',
     priority: 'medium',
     risk: 'medium',
-    assignedTo: 'u1',
+    assignedTo: '',
     tags: '',
   })
 
   const handleChange = (field, value) => setForm(prev => ({ ...prev, [field]: value }))
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
     if (!form.title.trim()) return
-    const newCase = createCase({
+    const newCase = await createCase({
       ...form,
       tags: form.tags.split(',').map(t => t.trim()).filter(Boolean),
     })
     onClose()
-    setForm({ title: '', summary: '', status: 'active', priority: 'medium', risk: 'medium', assignedTo: 'u1', tags: '' })
-    navigate(`/cases/${newCase.id}`)
+    setForm({ title: '', summary: '', status: 'active', priority: 'medium', risk: 'medium', assignedTo: '', tags: '' })
+    if (newCase?.id) navigate(`/cases/${newCase.id}`)
   }
 
   const inputClass = "w-full bg-bg-surface border border-border-main rounded-md px-3 py-2 text-sm text-text-primary placeholder:text-text-muted focus:border-primary/60 focus:outline-none transition-colors"
@@ -79,6 +79,7 @@ export function CreateCaseModal({ open, onClose }) {
           <div>
             <label className={labelClass}>Responsável</label>
             <select className={selectClass} value={form.assignedTo} onChange={e => handleChange('assignedTo', e.target.value)}>
+              <option value="">Selecione...</option>
               {users.map(u => <option key={u.id} value={u.id}>{u.name}</option>)}
             </select>
           </div>

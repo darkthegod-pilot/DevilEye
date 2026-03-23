@@ -8,8 +8,8 @@ import { StatusBadge, PriorityBadge, RiskBadge, Badge } from '@/components/ui/Ba
 
 export function CaseCard({ c, compact = false }) {
   const navigate = useNavigate()
-  const { openSidePanel, getUserById } = useApp()
-  const user = getUserById(c.assignedTo)
+  const { openSidePanel } = useApp()
+  const user = c.assignedTo
   const isCritical = c.risk === 'critical' && c.status === 'active'
 
   return (

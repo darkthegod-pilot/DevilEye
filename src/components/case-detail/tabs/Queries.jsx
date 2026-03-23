@@ -1,10 +1,11 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { format } from 'date-fns'
 import { ptBR } from 'date-fns/locale'
 import { Search, Clock, CheckCircle, XCircle, AlertCircle, Plus, Star } from 'lucide-react'
 import { useApp } from '@/context/AppContext'
 import { Badge } from '@/components/ui/Badge'
 import { Button } from '@/components/ui/Button'
+import { Modal } from '@/components/ui/Modal'
 import { EmptyState } from '@/components/ui/EmptyState'
 import { cn } from '@/lib/cn'
 
@@ -18,6 +19,84 @@ const RELIABILITY_CONFIG = {
   high:   { label: 'Alta Confiabilidade', color: 'text-success' },
   medium: { label: 'Confiabilidade Média', color: 'text-warning' },
   low:    { label: 'Baixa Confiabilidade', color: 'text-alert' },
+}
+
+const inputClass = "w-full bg-bg-surface border border-border-main rounded-md px-3 py-2 text-sm text-text-primary placeholder:text-text-muted focus:border-primary/60 focus:outline-none transition-colors"
+
+function AddQueryModal({ open, onClose, caseId }) {
+  const { addQuery, currentUser, toast } = useApp()
+  const [form, setForm] = useState({
+    source: '', queryType: '', queryParam: '',
+    status: 'pending', reliability: 'high',
+    resultSummary: '', notes: '',
+  })
+  const [loading, setLoading] = useState(false)
+
+  const handleSubmit = async (e) => {
+    e.preventDefault()
+    if (!form.source.trim() || !form.queryParam.trim()) return
+    setLoading(true)
+    try {
+      await addQuery(caseId, { ...form, authorId: currentUser.id })
+      toast('Consulta registrada!', 'success')
+      onClose()
+      setForm({ source: '', queryType: '', queryParam: '', status: 'pending', reliability: 'high', resultSummary: '', notes: '' })
+    } catch { toast('Erro ao registrar consulta.', 'error') }
+    finally { setLoading(false) }
+  }
+
+  return (
+    <Modal open={open} onClose={onClose} title="Nova Consulta" size="lg">
+      <form onSubmit={handleSubmit} className="px-6 py-5 space-y-4">
+        <div className="grid grid-cols-2 gap-4">
+          <div>
+            <label className="block text-xs text-text-muted mb-1 font-medium uppercase tracking-wider">Fonte *</label>
+            <input className={inputClass} placeholder="Ex: Receita Federal, Coaf, DETRAN" value={form.source} onChange={e => setForm(p => ({ ...p, source: e.target.value }))} required />
+          </div>
+          <div>
+            <label className="block text-xs text-text-muted mb-1 font-medium uppercase tracking-wider">Tipo de Consulta</label>
+            <input className={inputClass} placeholder="Ex: CPF, CNPJ, Placa, RIF" value={form.queryType} onChange={e => setForm(p => ({ ...p, queryType: e.target.value }))} />
+          </div>
+        </div>
+        <div>
+          <label className="block text-xs text-text-muted mb-1 font-medium uppercase tracking-wider">Parâmetro Consultado *</label>
+          <input className={inputClass} placeholder="Ex: 123.456.789-00 ou placa AAA-0000" value={form.queryParam} onChange={e => setForm(p => ({ ...p, queryParam: e.target.value }))} required />
+        </div>
+        <div className="grid grid-cols-2 gap-4">
+          <div>
+            <label className="block text-xs text-text-muted mb-1 font-medium uppercase tracking-wider">Status</label>
+            <select className={inputClass} value={form.status} onChange={e => setForm(p => ({ ...p, status: e.target.value }))}>
+              <option value="pending">Aguardando</option>
+              <option value="completed">Concluída</option>
+              <option value="failed">Falhou</option>
+            </select>
+          </div>
+          <div>
+            <label className="block text-xs text-text-muted mb-1 font-medium uppercase tracking-wider">Confiabilidade</label>
+            <select className={inputClass} value={form.reliability} onChange={e => setForm(p => ({ ...p, reliability: e.target.value }))}>
+              <option value="high">Alta</option>
+              <option value="medium">Média</option>
+              <option value="low">Baixa</option>
+            </select>
+          </div>
+        </div>
+        <div>
+          <label className="block text-xs text-text-muted mb-1 font-medium uppercase tracking-wider">Resultado</label>
+          <textarea className={`${inputClass} resize-none`} rows={3} placeholder="Resumo do resultado obtido..." value={form.resultSummary} onChange={e => setForm(p => ({ ...p, resultSummary: e.target.value }))} />
+        </div>
+        <div>
+          <label className="block text-xs text-text-muted mb-1 font-medium uppercase tracking-wider">Observações</label>
+          <textarea className={`${inputClass} resize-none`} rows={2} placeholder="Notas adicionais sobre a consulta..." value={form.notes} onChange={e => setForm(p => ({ ...p, notes: e.target.value }))} />
+        </div>
+        <div className="flex justify-end gap-3 pt-2 border-t border-border-main">
+          <Button type="button" variant="ghost" onClick={onClose}>Cancelar</Button>
+          <Button type="submit" variant="primary" disabled={!form.source.trim() || !form.queryParam.trim() || loading}>
+            {loading ? 'Salvando...' : 'Registrar Consulta'}
+          </Button>
+        </div>
+      </form>
+    </Modal>
+  )
 }
 
 function QueryCard({ query }) {
@@ -78,6 +157,7 @@ function QueryCard({ query }) {
 
 export function Queries({ caseId }) {
   const { queries, loadQueries } = useApp()
+  const [addOpen, setAddOpen] = useState(false)
   useEffect(() => { if (caseId) loadQueries(caseId) }, [caseId])
   const caseQueries = queries[caseId] || []
 
@@ -93,7 +173,7 @@ export function Queries({ caseId }) {
             {caseQueries.length} consulta{caseQueries.length !== 1 ? 's' : ''} · {completed} concluída{completed !== 1 ? 's' : ''} · {pending} aguardando
           </p>
         </div>
-        <Button variant="accent" size="sm">
+        <Button variant="accent" size="sm" onClick={() => setAddOpen(true)}>
           <Plus size={13} />
           Nova Consulta
         </Button>
@@ -109,12 +189,14 @@ export function Queries({ caseId }) {
       )}
 
       {caseQueries.length === 0 ? (
-        <EmptyState icon={Search} title="Sem consultas registradas" description="Registre consultas realizadas em fontes externas e bases de dados." action={{ label: 'Nova Consulta', onClick: () => {} }} />
+        <EmptyState icon={Search} title="Sem consultas registradas" description="Registre consultas realizadas em fontes externas e bases de dados." action={{ label: 'Nova Consulta', onClick: () => setAddOpen(true) }} />
       ) : (
         <div className="space-y-4">
           {caseQueries.map(q => <QueryCard key={q.id} query={q} />)}
         </div>
       )}
+
+      <AddQueryModal open={addOpen} onClose={() => setAddOpen(false)} caseId={caseId} />
     </div>
   )
 }

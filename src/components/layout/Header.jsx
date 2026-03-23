@@ -1,17 +1,29 @@
 import { useState, useEffect, useRef } from 'react'
-import { Search, Bell, ChevronDown, FolderOpen, User, X } from 'lucide-react'
+import { Search, Bell, ChevronDown, FolderOpen, User, X, Settings, LogOut, Shield } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 import { cn } from '@/lib/cn'
 import { useApp } from '@/context/AppContext'
 import { StatusBadge } from '@/components/ui/Badge'
 
 export function Header() {
-  const { cases, currentUser, profiles, globalSearch, dispatch } = useApp()
+  const { cases, currentUser, profiles, globalSearch, dispatch, logout } = useApp()
   const [searchOpen, setSearchOpen] = useState(false)
   const [query, setQuery] = useState('')
   const [results, setResults] = useState([])
+  const [userMenuOpen, setUserMenuOpen] = useState(false)
   const searchRef = useRef(null)
+  const userMenuRef = useRef(null)
   const navigate = useNavigate()
+
+  useEffect(() => {
+    const handleClick = (e) => {
+      if (userMenuRef.current && !userMenuRef.current.contains(e.target)) {
+        setUserMenuOpen(false)
+      }
+    }
+    document.addEventListener('mousedown', handleClick)
+    return () => document.removeEventListener('mousedown', handleClick)
+  }, [])
 
   useEffect(() => {
     const handleKey = (e) => {
@@ -69,24 +81,68 @@ export function Header() {
       <div className="flex-1" />
 
       {/* Alerts */}
-      <button className="relative p-2 rounded-md text-text-muted hover:text-text-primary hover:bg-bg-hover transition-colors">
+      <button
+        onClick={() => navigate('/notifications')}
+        className="relative p-2 rounded-md text-text-muted hover:text-text-primary hover:bg-bg-hover transition-colors"
+        title="Alertas"
+      >
         <Bell size={16} />
         {criticalCount > 0 && (
-          <span className="absolute top-1 right-1 w-2 h-2 rounded-full bg-alert" />
+          <span className="absolute top-1 right-1 w-2 h-2 rounded-full bg-alert animate-pulse" />
         )}
       </button>
 
-      {/* User */}
-      <button className="flex items-center gap-2 px-3 py-1.5 rounded-md hover:bg-bg-hover transition-colors">
-        <div className="w-7 h-7 rounded-full bg-primary/30 border border-primary/40 flex items-center justify-center">
-          <span className="text-[10px] font-semibold text-accent">{currentUser.initials}</span>
-        </div>
-        <div className="hidden sm:block text-left">
-          <div className="text-xs font-medium text-text-primary">{currentUser.name}</div>
-          <div className="text-[10px] text-text-muted capitalize">{currentUser.role}</div>
-        </div>
-        <ChevronDown size={12} className="text-text-muted" />
-      </button>
+      {/* User dropdown */}
+      <div className="relative" ref={userMenuRef}>
+        <button
+          onClick={() => setUserMenuOpen(p => !p)}
+          className="flex items-center gap-2 px-3 py-1.5 rounded-md hover:bg-bg-hover transition-colors"
+        >
+          <div className="w-7 h-7 rounded-full bg-primary/30 border border-primary/40 flex items-center justify-center">
+            <span className="text-[10px] font-semibold text-accent">{currentUser.initials}</span>
+          </div>
+          <div className="hidden sm:block text-left">
+            <div className="text-xs font-medium text-text-primary">{currentUser.name}</div>
+            <div className="text-[10px] text-text-muted capitalize">{currentUser.role}</div>
+          </div>
+          <ChevronDown size={12} className={cn('text-text-muted transition-transform', userMenuOpen && 'rotate-180')} />
+        </button>
+
+        {userMenuOpen && (
+          <div className="absolute right-0 top-full mt-1 w-52 bg-bg-card border border-border-main rounded-xl shadow-[0_8px_32px_rgba(0,0,0,0.4)] z-50 overflow-hidden animate-fade-in">
+            <div className="px-4 py-3 border-b border-border-subtle">
+              <p className="text-xs font-semibold text-text-primary">{currentUser.name}</p>
+              <p className="text-[10px] text-text-muted font-mono">@{currentUser.username}</p>
+            </div>
+            <div className="py-1">
+              <button
+                onClick={() => { navigate('/settings'); setUserMenuOpen(false) }}
+                className="w-full flex items-center gap-3 px-4 py-2 text-sm text-text-secondary hover:bg-bg-hover hover:text-text-primary transition-colors"
+              >
+                <Settings size={14} className="text-text-muted" />
+                Configurações
+              </button>
+              {currentUser.role === 'admin' && (
+                <button
+                  onClick={() => { navigate('/settings'); setUserMenuOpen(false) }}
+                  className="w-full flex items-center gap-3 px-4 py-2 text-sm text-text-secondary hover:bg-bg-hover hover:text-text-primary transition-colors"
+                >
+                  <Shield size={14} className="text-accent" />
+                  Painel Admin
+                </button>
+              )}
+              <div className="border-t border-border-subtle my-1" />
+              <button
+                onClick={() => { logout(); setUserMenuOpen(false) }}
+                className="w-full flex items-center gap-3 px-4 py-2 text-sm text-alert hover:bg-alert/10 transition-colors"
+              >
+                <LogOut size={14} />
+                Sair
+              </button>
+            </div>
+          </div>
+        )}
+      </div>
 
       {/* Global search overlay */}
       {searchOpen && (

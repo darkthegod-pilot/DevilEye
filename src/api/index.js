@@ -12,6 +12,15 @@ export const usersApi = {
   list: () => api.get('/users'),
 }
 
+// ─── Admin ────────────────────────────────────────────────────────────────────
+export const adminApi = {
+  getUsers:    ()         => api.get('/admin/users'),
+  createUser:  (data)     => api.post('/admin/users', data),
+  updateUser:  (id, data) => api.put(`/admin/users/${id}`, data),
+  deleteUser:  (id)       => api.delete(`/admin/users/${id}`),
+  getStats:    ()         => api.get('/admin/stats'),
+}
+
 // ─── Cases ────────────────────────────────────────────────────────────────────
 export const casesApi = {
   list:   (params = {}) => api.get(`/cases?${new URLSearchParams(params)}`),

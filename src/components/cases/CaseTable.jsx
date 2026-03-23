@@ -26,7 +26,7 @@ export function CaseTable({ cases }) {
   const [sortKey, setSortKey] = useState('updatedAt')
   const [sortDir, setSortDir] = useState('desc')
   const navigate = useNavigate()
-  const { getUserById, openSidePanel } = useApp()
+  const { openSidePanel } = useApp()
 
   const handleSort = (key) => {
     if (sortKey === key) setSortDir(d => d === 'asc' ? 'desc' : 'asc')
@@ -76,7 +76,7 @@ export function CaseTable({ cases }) {
         </thead>
         <tbody>
           {sorted.map(c => {
-            const user = getUserById(c.assignedTo)
+            const user = c.assignedTo
             return (
               <tr
                 key={c.id}

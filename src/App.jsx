@@ -5,6 +5,8 @@ import { Dashboard } from '@/components/dashboard/Dashboard'
 import { Cases } from '@/components/cases/Cases'
 import { CaseDetail } from '@/components/case-detail/CaseDetail'
 import { Login } from '@/components/auth/Login'
+import { Notifications } from '@/components/notifications/Notifications'
+import { Settings } from '@/components/settings/Settings'
 
 function ProtectedRoute({ children }) {
   const { isAuthChecked, currentUser } = useApp()
@@ -38,6 +40,8 @@ export default function App() {
             <Route path="cases" element={<Cases />} />
             <Route path="cases/:caseId" element={<CaseDetail />} />
             <Route path="cases/:caseId/:tab" element={<CaseDetail />} />
+            <Route path="notifications" element={<Notifications />} />
+            <Route path="settings" element={<Settings />} />
             <Route path="*" element={<Navigate to="dashboard" replace />} />
           </Route>
         </Routes>

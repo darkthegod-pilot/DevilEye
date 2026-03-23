@@ -20,12 +20,14 @@ async function main() {
 
   // Usuários
   const hash = await bcrypt.hash('devileye123', 10)
-  const [u1, u2, u3] = await Promise.all([
+  const adminHash = await bcrypt.hash('admin123', 10)
+  const [u0, u1, u2, u3] = await Promise.all([
+    prisma.user.create({ data: { name: 'Administrador', initials: 'AD', username: 'admin', password: adminHash, role: 'admin' } }),
     prisma.user.create({ data: { name: 'Ag. Carvalho', initials: 'AC', username: 'carvalho', password: hash, role: 'operator' } }),
     prisma.user.create({ data: { name: 'Ana Soares', initials: 'AS', username: 'ana', password: hash, role: 'analyst' } }),
     prisma.user.create({ data: { name: 'Dir. Melo', initials: 'DM', username: 'melo', password: hash, role: 'supervisor' } }),
   ])
-  console.log('  ✓ 3 usuários criados')
+  console.log('  ✓ 4 usuários criados (incluindo admin)')
 
   // Casos
   const c1 = await prisma.case.create({
@@ -243,9 +245,10 @@ async function main() {
 
   console.log('\n✅ Seed concluído com sucesso!')
   console.log('\n👥 Credenciais de acesso:')
-  console.log('   Usuário: carvalho / Senha: devileye123')
-  console.log('   Usuário: ana      / Senha: devileye123')
-  console.log('   Usuário: melo     / Senha: devileye123')
+  console.log('   Usuário: admin    / Senha: admin123    (Administrador)')
+  console.log('   Usuário: carvalho / Senha: devileye123 (Operador)')
+  console.log('   Usuário: ana      / Senha: devileye123 (Analista)')
+  console.log('   Usuário: melo     / Senha: devileye123 (Supervisor)')
 }
 
 main()

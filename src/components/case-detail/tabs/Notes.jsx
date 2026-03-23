@@ -49,10 +49,10 @@ function AddNoteModal({ open, onClose, caseId }) {
   const { addNote, currentUser } = useApp()
   const [form, setForm] = useState({ title: '', content: '', type: 'quick', pinned: false, private: false })
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
     if (!form.title.trim() || !form.content.trim()) return
-    addNote({ ...form, caseId, authorId: currentUser.id, linkedProfileId: null })
+    await addNote(caseId, { ...form, authorId: currentUser.id, linkedProfileId: null })
     onClose()
     setForm({ title: '', content: '', type: 'quick', pinned: false, private: false })
   }

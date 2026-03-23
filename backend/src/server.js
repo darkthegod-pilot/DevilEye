@@ -28,6 +28,7 @@ app.get('/api/health', (req, res) => {
 // ─── Rotas ────────────────────────────────────────────────────────────────────
 app.use('/api/auth',        require('./routes/auth'))
 app.use('/api/users',       require('./routes/users'))
+app.use('/api/admin',       require('./routes/admin'))
 app.use('/api/cases',       require('./routes/cases'))
 
 // Rotas aninhadas nos casos

@@ -5,7 +5,7 @@ import { useApp } from '@/context/AppContext'
 import { StatusBadge, PriorityBadge, RiskBadge, Badge } from '@/components/ui/Badge'
 
 export function Overview({ caseId, c }) {
-  const { notes, tasks, timelineEvents, profiles, getUserById } = useApp()
+  const { notes, tasks, timelineEvents, profiles } = useApp()
   const caseNotes = notes[caseId] || []
   const caseTasks = tasks[caseId] || []
   const caseEvents = timelineEvents[caseId] || []
@@ -16,7 +16,7 @@ export function Overview({ caseId, c }) {
   const recentEvents = [...caseEvents].sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp)).slice(0, 5)
   const primaryProfile = caseProfiles.find(p => p.classification === 'primary')
 
-  const user = getUserById(c.assignedTo)
+  const user = c.assignedTo
 
   return (
     <div className="h-full overflow-y-auto p-6 space-y-6 animate-fade-in">

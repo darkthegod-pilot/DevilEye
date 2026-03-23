@@ -23,10 +23,10 @@ const COLUMNS = [
 ]
 
 function TaskCard({ task, caseId }) {
-  const { updateTask, getUserById } = useApp()
+  const { updateTask } = useApp()
   const config = STATUS_CONFIG[task.status] || STATUS_CONFIG.pending
   const Icon = config.icon
-  const user = getUserById(task.assignedTo)
+  const user = task.assignedTo
 
   const toggleStatus = () => updateTask(caseId, task.id, { status: config.next })
 
@@ -65,14 +65,15 @@ function TaskCard({ task, caseId }) {
 
 function AddTaskModal({ open, onClose, caseId }) {
   const { addTask, currentUser, users } = useApp()
-  const [form, setForm] = useState({ title: '', description: '', priority: 'medium', assignedTo: 'u1', dueDate: '' })
+  const defaultUser = users[0]?.id || ''
+  const [form, setForm] = useState({ title: '', description: '', priority: 'medium', assignedToId: '', dueDate: '' })
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
     if (!form.title.trim()) return
-    addTask({ ...form, caseId, status: 'pending' })
+    await addTask(caseId, { ...form, assignedToId: form.assignedToId || currentUser.id, status: 'pending' })
     onClose()
-    setForm({ title: '', description: '', priority: 'medium', assignedTo: 'u1', dueDate: '' })
+    setForm({ title: '', description: '', priority: 'medium', assignedToId: '', dueDate: '' })
   }
 
   const inputClass = "w-full bg-bg-surface border border-border-main rounded-md px-3 py-2 text-sm text-text-primary placeholder:text-text-muted focus:border-primary/60 focus:outline-none transition-colors"
@@ -99,7 +100,8 @@ function AddTaskModal({ open, onClose, caseId }) {
           </div>
           <div>
             <label className="block text-xs text-text-muted mb-1 font-medium uppercase tracking-wider">Responsável</label>
-            <select className={inputClass} value={form.assignedTo} onChange={e => setForm(p => ({ ...p, assignedTo: e.target.value }))}>
+            <select className={inputClass} value={form.assignedToId} onChange={e => setForm(p => ({ ...p, assignedToId: e.target.value }))}>
+              <option value="">Eu mesmo</option>
               {users.map(u => <option key={u.id} value={u.id}>{u.name}</option>)}
             </select>
           </div>

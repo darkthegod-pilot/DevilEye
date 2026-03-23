@@ -17,7 +17,7 @@ const BOTTOM_ITEMS = [
   { to: '/settings', icon: Settings, label: 'Configurações' },
 ]
 
-function NavItem({ to, icon: Icon, label, collapsed }) {
+function NavItem({ to, icon: Icon, label, collapsed, badge }) {
   return (
     <NavLink
       to={to}
@@ -27,8 +27,18 @@ function NavItem({ to, icon: Icon, label, collapsed }) {
       )}
       title={collapsed ? label : undefined}
     >
-      <Icon size={16} className="shrink-0" />
-      {!collapsed && <span>{label}</span>}
+      <div className="relative shrink-0">
+        <Icon size={16} />
+        {badge && (
+          <span className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-alert text-white text-[9px] font-bold flex items-center justify-center">
+            {badge > 9 ? '9+' : badge}
+          </span>
+        )}
+      </div>
+      {!collapsed && <span className="flex-1">{label}</span>}
+      {!collapsed && badge && (
+        <span className="ml-auto bg-alert/10 text-alert border border-alert/20 rounded-full px-1.5 py-0.5 text-[10px] font-semibold">{badge}</span>
+      )}
       {collapsed && (
         <div className="absolute left-full ml-2 px-2 py-1 bg-bg-card border border-border-main rounded text-xs text-text-primary whitespace-nowrap
                         opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity z-50">
@@ -41,7 +51,7 @@ function NavItem({ to, icon: Icon, label, collapsed }) {
 
 export function Sidebar() {
   const [collapsed, setCollapsed] = useState(false)
-  const { cases } = useApp()
+  const { cases, currentUser } = useApp()
 
   const activeCases = cases.filter(c => c.status === 'active').length
   const criticalCases = cases.filter(c => c.risk === 'critical' && c.status === 'active').length
@@ -124,7 +134,7 @@ export function Sidebar() {
       {/* Bottom nav */}
       <div className="px-2 pb-3 space-y-0.5 border-t border-border-subtle pt-3">
         {BOTTOM_ITEMS.map((item) => (
-          <NavItem key={item.to} {...item} collapsed={collapsed} />
+          <NavItem key={item.to} {...item} collapsed={collapsed} badge={item.to === '/notifications' && criticalCases > 0 ? criticalCases : null} />
         ))}
       </div>
 
