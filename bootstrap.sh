@@ -11,6 +11,7 @@ CYAN='\033[0;36m'; BOLD='\033[1m'; DIM='\033[2m'; RESET='\033[0m'
 
 # --- Constantes ---
 REPO_URL="https://github.com/darkthegod-pilot/DevilEye.git"
+REPO_BRANCH="claude/build-investigation-panel-3I4tI"
 INSTALL_DIR="/var/www/devileye"
 NODE_MIN=18
 NODE_TARGET=20
@@ -172,13 +173,13 @@ step "2/6" "Preparando repositório DevilEye..."
 
 if [[ -d "$INSTALL_DIR/.git" ]]; then
   warn "Diretório $INSTALL_DIR já existe. Atualizando..."
-  git -C "$INSTALL_DIR" fetch origin main --quiet
-  git -C "$INSTALL_DIR" reset --hard origin/main --quiet
-  ok "Repositório atualizado para origin/main"
+  git -C "$INSTALL_DIR" fetch origin "${REPO_BRANCH}" --quiet
+  git -C "$INSTALL_DIR" reset --hard "origin/${REPO_BRANCH}" --quiet
+  ok "Repositório atualizado para origin/${REPO_BRANCH}"
 else
   mkdir -p "$(dirname "$INSTALL_DIR")"
-  git clone --depth=1 "$REPO_URL" "$INSTALL_DIR"
-  ok "Repositório clonado em $INSTALL_DIR"
+  git clone --depth=1 --branch "${REPO_BRANCH}" "$REPO_URL" "$INSTALL_DIR"
+  ok "Repositório clonado em $INSTALL_DIR (branch: ${REPO_BRANCH})"
 fi
 
 cd "$INSTALL_DIR"
