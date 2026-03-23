@@ -4,7 +4,7 @@
 #  Uso: curl -fsSL https://raw.githubusercontent.com/darkthegod-pilot/DevilEye/main/bootstrap.sh | bash
 #  Ou:  wget -qO- https://raw.githubusercontent.com/darkthegod-pilot/DevilEye/main/bootstrap.sh | bash
 # =============================================================================
-set -euo pipefail
+set -eo pipefail
 
 RED='\033[0;31m'; GREEN='\033[0;32m'; YELLOW='\033[1;33m'
 CYAN='\033[0;36m'; BOLD='\033[1m'; DIM='\033[2m'; RESET='\033[0m'
@@ -52,9 +52,13 @@ if [[ "$INSTALL_NODE" == true ]]; then
     curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
   fi
   # shellcheck source=/dev/null
+  # Disable -u temporarily to avoid nvm unbound variable issues
+  set +u
   source "$NVM_DIR/nvm.sh"
-  nvm install --lts
-  nvm use --lts
+  nvm install 20
+  nvm use 20
+  nvm alias default 20
+  set -u
   ok "Node.js $(node -v) instalado via nvm"
 fi
 
