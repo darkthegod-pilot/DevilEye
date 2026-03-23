@@ -1,3 +1,4 @@
+import { useEffect } from 'react'
 import { User, Building2, Plus, Phone, Mail, MapPin, Tag, ExternalLink } from 'lucide-react'
 import { useApp } from '@/context/AppContext'
 import { Badge } from '@/components/ui/Badge'
@@ -103,7 +104,8 @@ function ProfileCard({ profile, onView }) {
 }
 
 export function Profiles({ caseId }) {
-  const { profiles, openSidePanel } = useApp()
+  const { profiles, loadProfiles, openSidePanel } = useApp()
+  useEffect(() => { if (caseId) loadProfiles(caseId) }, [caseId])
   const caseProfiles = profiles[caseId] || []
 
   const handleView = (profile) => openSidePanel('profile', profile)

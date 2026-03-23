@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { format } from 'date-fns'
 import { ptBR } from 'date-fns/locale'
 import { Plus, CheckCircle, Clock, Circle, XCircle } from 'lucide-react'
@@ -118,8 +118,9 @@ function AddTaskModal({ open, onClose, caseId }) {
 }
 
 export function Tasks({ caseId }) {
-  const { tasks } = useApp()
+  const { tasks, loadTasks } = useApp()
   const [addOpen, setAddOpen] = useState(false)
+  useEffect(() => { if (caseId) loadTasks(caseId) }, [caseId])
   const caseTasks = tasks[caseId] || []
 
   return (

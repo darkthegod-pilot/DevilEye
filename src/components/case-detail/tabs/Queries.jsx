@@ -1,3 +1,4 @@
+import { useEffect } from 'react'
 import { format } from 'date-fns'
 import { ptBR } from 'date-fns/locale'
 import { Search, Clock, CheckCircle, XCircle, AlertCircle, Plus, Star } from 'lucide-react'
@@ -76,7 +77,8 @@ function QueryCard({ query }) {
 }
 
 export function Queries({ caseId }) {
-  const { queries } = useApp()
+  const { queries, loadQueries } = useApp()
+  useEffect(() => { if (caseId) loadQueries(caseId) }, [caseId])
   const caseQueries = queries[caseId] || []
 
   const completed = caseQueries.filter(q => q.status === 'completed').length

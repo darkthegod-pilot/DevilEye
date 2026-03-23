@@ -1,5 +1,6 @@
-import { useState, useRef, useCallback } from 'react'
+import { useState, useRef, useCallback, useEffect } from 'react'
 import { Plus, Trash2, Lightbulb, AlertTriangle, CheckCircle, StickyNote, ZoomIn, ZoomOut, Maximize } from 'lucide-react'
+import { useApp } from '@/context/AppContext'
 
 const NOTE_COLORS = {
   general: { bg: '#1a2030', border: '#252d3d', title: '#94a3b8', accent: '#252d3d' },
@@ -17,6 +18,14 @@ const NOTE_TYPE_BTN = [
   { id: 'info', icon: StickyNote, label: 'Informação' },
 ]
 
+let updateTimer = {}
+function debouncedApiUpdate(muralApi, id, patch) {
+  clearTimeout(updateTimer[id])
+  updateTimer[id] = setTimeout(() => {
+    muralApi.update(id, patch).catch(() => {})
+  }, 600)
+}
+
 function MuralNote({ note, onUpdate, onDelete, zoom }) {
   const colors = NOTE_COLORS[note.color] || NOTE_COLORS.general
   const [dragging, setDragging] = useState(false)
@@ -31,10 +40,13 @@ function MuralNote({ note, onUpdate, onDelete, zoom }) {
     const handleMove = (me) => {
       const dx = (me.clientX - dragStart.current.mx) / zoom
       const dy = (me.clientY - dragStart.current.my) / zoom
-      onUpdate(note.id, { x: dragStart.current.ox + dx, y: dragStart.current.oy + dy })
+      onUpdate(note.id, { x: dragStart.current.ox + dx, y: dragStart.current.oy + dy }, false)
     }
-    const handleUp = () => {
+    const handleUp = (me) => {
       setDragging(false)
+      const dx = (me.clientX - dragStart.current.mx) / zoom
+      const dy = (me.clientY - dragStart.current.my) / zoom
+      onUpdate(note.id, { x: dragStart.current.ox + dx, y: dragStart.current.oy + dy }, true)
       document.removeEventListener('mousemove', handleMove)
       document.removeEventListener('mouseup', handleUp)
     }
@@ -79,7 +91,7 @@ function MuralNote({ note, onUpdate, onDelete, zoom }) {
       {/* Content */}
       <textarea
         value={note.content}
-        onChange={e => onUpdate(note.id, { content: e.target.value })}
+        onChange={e => onUpdate(note.id, { content: e.target.value }, true)}
         onMouseDown={e => e.stopPropagation()}
         placeholder="Escreva aqui..."
         style={{
@@ -94,20 +106,9 @@ function MuralNote({ note, onUpdate, onDelete, zoom }) {
   )
 }
 
-function loadMural(caseId) {
-  try {
-    const s = localStorage.getItem(`mural-${caseId}`)
-    if (s) return JSON.parse(s)
-  } catch {}
-  return []
-}
-
-function saveMural(caseId, items) {
-  localStorage.setItem(`mural-${caseId}`, JSON.stringify(items))
-}
-
 export function FreeMural({ caseId }) {
-  const [items, setItems] = useState(() => loadMural(caseId))
+  const { muralApi } = useApp()
+  const [items, setItems] = useState([])
   const [zoom, setZoom] = useState(1)
   const [pan, setPan] = useState({ x: 0, y: 0 })
   const [isPanning, setIsPanning] = useState(false)
@@ -115,35 +116,38 @@ export function FreeMural({ caseId }) {
   const containerRef = useRef(null)
   const [selectedColor, setSelectedColor] = useState('general')
 
-  const addNote = () => {
-    const newItems = [...items, {
-      id: `mn-${Date.now()}`,
+  useEffect(() => {
+    if (!caseId) return
+    muralApi.list(caseId).then(data => setItems(data || [])).catch(() => {})
+  }, [caseId])
+
+  const addNote = async () => {
+    const newItem = {
       type: 'sticky',
       color: selectedColor,
       x: (300 - pan.x) / zoom + Math.random() * 100,
       y: (200 - pan.y) / zoom + Math.random() * 80,
       width: 220,
       content: '',
-    }]
-    setItems(newItems)
-    saveMural(caseId, newItems)
+    }
+    try {
+      const created = await muralApi.create(caseId, newItem)
+      setItems(prev => [...prev, created])
+    } catch {
+      // Optimistic fallback
+      setItems(prev => [...prev, { ...newItem, id: `mn-${Date.now()}` }])
+    }
   }
 
-  const updateItem = useCallback((id, updates) => {
-    setItems(prev => {
-      const updated = prev.map(item => item.id === id ? { ...item, ...updates } : item)
-      saveMural(caseId, updated)
-      return updated
-    })
-  }, [caseId])
+  const updateItem = useCallback((id, updates, persist = true) => {
+    setItems(prev => prev.map(item => item.id === id ? { ...item, ...updates } : item))
+    if (persist) debouncedApiUpdate(muralApi, id, updates)
+  }, [muralApi])
 
-  const deleteItem = useCallback((id) => {
-    setItems(prev => {
-      const updated = prev.filter(item => item.id !== id)
-      saveMural(caseId, updated)
-      return updated
-    })
-  }, [caseId])
+  const deleteItem = useCallback(async (id) => {
+    setItems(prev => prev.filter(item => item.id !== id))
+    muralApi.delete(id).catch(() => {})
+  }, [muralApi])
 
   const handleCanvasMouseDown = (e) => {
     if (e.target !== containerRef.current && e.target !== containerRef.current.firstChild) return

@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { format } from 'date-fns'
 import { ptBR } from 'date-fns/locale'
 import {
@@ -32,8 +32,9 @@ const FILTER_TYPES = [
 ]
 
 export function Timeline({ caseId }) {
-  const { timelineEvents, getUserById } = useApp()
+  const { timelineEvents, loadTimeline, getUserById } = useApp()
   const [filter, setFilter] = useState('all')
+  useEffect(() => { if (caseId) loadTimeline(caseId) }, [caseId])
 
   const events = timelineEvents[caseId] || []
   const sorted = [...events].sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp))

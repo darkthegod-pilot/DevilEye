@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { format } from 'date-fns'
 import { ptBR } from 'date-fns/locale'
 import { Plus, Pin, Lock, FileText, Brain, ShieldAlert, Lightbulb, Clock, AlignLeft, CheckCircle2, Zap } from 'lucide-react'
@@ -111,8 +111,9 @@ function AddNoteModal({ open, onClose, caseId }) {
 }
 
 export function Notes({ caseId }) {
-  const { notes } = useApp()
+  const { notes, loadNotes } = useApp()
   const [addOpen, setAddOpen] = useState(false)
+  useEffect(() => { if (caseId) loadNotes(caseId) }, [caseId])
   const [filter, setFilter] = useState('all')
 
   const caseNotes = notes[caseId] || []

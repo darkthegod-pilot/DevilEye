@@ -1,4 +1,4 @@
-import { useCallback, useRef, useState, useMemo } from 'react'
+import { useCallback, useRef, useState, useEffect } from 'react'
 import {
   ReactFlow, addEdge, useNodesState, useEdgesState,
   Background, Controls, MiniMap, Panel,
@@ -94,50 +94,48 @@ const defaultEdgeOptions = {
   markerEnd: { type: MarkerType.ArrowClosed, color: '#252d3d', width: 14, height: 14 },
 }
 
-function loadLayout(caseId) {
-  try {
-    const saved = localStorage.getItem(`organogram-${caseId}`)
-    if (saved) return JSON.parse(saved)
-  } catch {}
-  return null
-}
-
-let saveTimer = null
-function debouncedSave(caseId, nodes, edges) {
-  clearTimeout(saveTimer)
-  saveTimer = setTimeout(() => {
-    localStorage.setItem(`organogram-${caseId}`, JSON.stringify({ nodes, edges }))
-  }, 500)
-}
-
 const NODE_TYPE_LIST = Object.entries(NODE_TYPE_CONFIG).map(([id, cfg]) => ({ id, ...cfg }))
 
+let saveTimer = null
+function debouncedSave(saveFn, caseId, nodes, edges) {
+  clearTimeout(saveTimer)
+  saveTimer = setTimeout(() => saveFn(caseId, { nodes, edges }), 800)
+}
+
 export function Organogram({ caseId }) {
-  const { organogramLayouts, openSidePanel } = useApp()
+  const { organogramApi, openSidePanel } = useApp()
   const [selectedType, setSelectedType] = useState('person')
-  const reactFlowWrapper = useRef(null)
-  const [reactFlowInstance, setReactFlowInstance] = useState(null)
+  const [nodes, setNodes, onNodesChange] = useNodesState([])
+  const [edges, setEdges, onEdgesChange] = useEdgesState([])
+  const [loaded, setLoaded] = useState(false)
 
-  const saved = loadLayout(caseId)
-  const defaultLayout = organogramLayouts[caseId] || { nodes: [], edges: [] }
-  const initialNodes = (saved?.nodes || defaultLayout.nodes).map(n => ({ ...n, draggable: true }))
-  const initialEdges = saved?.edges || defaultLayout.edges
+  useEffect(() => {
+    if (!caseId) return
+    organogramApi.get(caseId).then(data => {
+      if (data) {
+        setNodes((data.nodes || []).map(n => ({ ...n, draggable: true })))
+        setEdges(data.edges || [])
+      }
+      setLoaded(true)
+    }).catch(() => setLoaded(true))
+  }, [caseId])
 
-  const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes)
-  const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges)
+  const saveLayout = useCallback((id, layout) => {
+    organogramApi.save(id, layout).catch(() => {})
+  }, [organogramApi])
 
   const onConnect = useCallback((params) => {
     setEdges(eds => {
       const updated = addEdge({ ...params, ...defaultEdgeOptions }, eds)
-      debouncedSave(caseId, nodes, updated)
+      debouncedSave(saveLayout, caseId, nodes, updated)
       return updated
     })
-  }, [caseId, nodes, setEdges])
+  }, [caseId, nodes, setEdges, saveLayout])
 
   const handleNodesChange = useCallback((changes) => {
     onNodesChange(changes)
-    setNodes(nds => { debouncedSave(caseId, nds, edges); return nds })
-  }, [onNodesChange, caseId, edges, setNodes])
+    setNodes(nds => { debouncedSave(saveLayout, caseId, nds, edges); return nds })
+  }, [onNodesChange, caseId, edges, setNodes, saveLayout])
 
   const addNode = useCallback(() => {
     const config = NODE_TYPE_CONFIG[selectedType]
@@ -150,19 +148,27 @@ export function Organogram({ caseId }) {
     }
     setNodes(nds => {
       const updated = [...nds, newNode]
-      debouncedSave(caseId, updated, edges)
+      debouncedSave(saveLayout, caseId, updated, edges)
       return updated
     })
-  }, [selectedType, caseId, edges, setNodes])
+  }, [selectedType, caseId, edges, setNodes, saveLayout])
 
   const deleteSelected = useCallback(() => {
     setNodes(nds => {
       const updated = nds.filter(n => !n.selected)
-      debouncedSave(caseId, updated, edges)
+      debouncedSave(saveLayout, caseId, updated, edges)
       return updated
     })
     setEdges(eds => eds.filter(e => !e.selected))
-  }, [caseId, edges, setNodes, setEdges])
+  }, [caseId, edges, setNodes, setEdges, saveLayout])
+
+  if (!loaded) {
+    return (
+      <div style={{ width: '100%', height: '100%', background: '#0a0d12', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        <div style={{ width: 32, height: 32, border: '2px solid rgba(0,194,224,0.2)', borderTopColor: '#00c2e0', borderRadius: '50%', animation: 'spin 0.8s linear infinite' }} />
+      </div>
+    )
+  }
 
   return (
     <div style={{ width: '100%', height: '100%', background: '#0a0d12' }}>
@@ -172,7 +178,6 @@ export function Organogram({ caseId }) {
         onNodesChange={handleNodesChange}
         onEdgesChange={onEdgesChange}
         onConnect={onConnect}
-        onInit={setReactFlowInstance}
         nodeTypes={nodeTypes}
         defaultEdgeOptions={defaultEdgeOptions}
         fitView

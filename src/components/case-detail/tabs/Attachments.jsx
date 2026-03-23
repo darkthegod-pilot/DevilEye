@@ -1,3 +1,4 @@
+import { useEffect } from 'react'
 import { format } from 'date-fns'
 import { ptBR } from 'date-fns/locale'
 import { FileText, Image, File, Upload, Download, Eye } from 'lucide-react'
@@ -53,7 +54,8 @@ function AttachmentCard({ att }) {
 }
 
 export function Attachments({ caseId }) {
-  const { attachments } = useApp()
+  const { attachments, loadAttachments } = useApp()
+  useEffect(() => { if (caseId) loadAttachments(caseId) }, [caseId])
   const caseAttachments = attachments[caseId] || []
 
   const pdfs = caseAttachments.filter(a => a.type === 'pdf')
